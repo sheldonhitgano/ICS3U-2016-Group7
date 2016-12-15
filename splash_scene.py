@@ -1,4 +1,4 @@
-# Created by: Mr. Coxall
+# Created by: Sheldon H
 # Created on: Sep 2016
 # Created for: ICS3U
 # This scene shows a splash screen for 2 seconds,
@@ -8,7 +8,7 @@ from scene import *
 import ui
 import time
 
-from main_menu_scene import *
+from game_logo_scene import *
 
 
 class SplashScene(Scene):
@@ -32,7 +32,7 @@ class SplashScene(Scene):
         
         # after 2 seconds, move to main menu scene
         if not self.presented_scene and time.time() - self.start_time > 2:
-            self.present_modal_scene(MainMenuScene())
+            self.present_modal_scene(GameLogoScene())
     
     def touch_began(self, touch):
         # this method is called, when user touches the screen
