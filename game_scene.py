@@ -4,8 +4,10 @@
 # Created for: ICS3U
 # This scene shows a splash screen for 2 seconds,
 #   then transitions to the main menu.
+from __future__ import division
 from numpy import random
 from scene import *
+import time
 import ui
 
 
@@ -21,7 +23,6 @@ class GameScene(Scene):
         
         
         self.score_position = Vector2()
-        self.center_of_screen = self.size/2
         self.left_button_down = False
         self.right_button_down = False
         self.dash_button_down = False
@@ -36,21 +37,23 @@ class GameScene(Scene):
         self.dead = False
         self.score = 0
         self.health = 3
-        
-        
+        self.walking_counter =time.time()
+        self.left_limit = 30
+        self.right_limit = 1012
         
         #add background colour
-        background_position = self.center_of_screen
-        background_position.y = 100
+        background_position = Vector2(self.size_of_screen_x * 0.5, self.size_of_screen_y * 0.5)
+        background_size = Vector2(self.size_of_screen_x, self.size_of_screen_y)
         self.background = SpriteNode('./assets/sprites/full_background.png',
-                                    position = self.size/2,
+                                    position = background_position,
                                     parent =self,
-                                    size = self.size)
+                                    size = background_size)
         
         #character
         
-        character_position = self.center_of_screen
-        character_position.y = 125
+        character_position = Vector2(self.size_of_screen_x * 0.5, self.size_of_screen_y *(1/6))
+        #character_position.x = 500
+        #character_position.y = 125
         self.character = SpriteNode('./assets/sprites/character.png',
                                     parent = self,
                                     position = character_position,
@@ -58,9 +61,7 @@ class GameScene(Scene):
        
        
         #left button
-        left_button_position = self.center_of_screen
-        left_button_position.x = 150
-        left_button_position.y = 75
+        left_button_position = Vector2(self.size_of_screen_x * (1/6), self.size_of_screen_y * (1/18))
         self.left_button = SpriteNode('./assets/sprites/left_button1.png',
                                       parent = self,
                                       position = left_button_position,
@@ -68,9 +69,7 @@ class GameScene(Scene):
                                       alpha = 0.5)
         
         #right button
-        right_button_position = self.center_of_screen
-        right_button_position.x = 400
-        right_button_position.y = 75
+        right_button_position = Vector2(self.size_of_screen_x * (1/2.5), self.size_of_screen_y * (1/18))
         self.right_button = SpriteNode('./assets/sprites/right_button1.png',
                                        parent = self,
                                        position = right_button_position,
@@ -78,9 +77,7 @@ class GameScene(Scene):
                                        alpha = 0.5)
         
         #dash button
-        dash_button_position = self.center_of_screen
-        dash_button_position.x= 900
-        dash_button_position.y= 75
+        dash_button_position = Vector2(self.size_of_screen_x *(2/2.3), self.size_of_screen_y * (1/8.5))
         self.dash_button = SpriteNode('./assets/sprites/dash_button1.png',
                                        parent = self,
                                        position = dash_button_position,
@@ -88,58 +85,135 @@ class GameScene(Scene):
                                        alpha = 0.5)
         
         #Score Label
-        self.score_position.x = 100
-        self.score_position.y = self.size_of_screen_y - 50
+        self.score_position = Vector2(self.size_of_screen_x * (0.5/6), self.size_of_screen_y * (5.7/6))
         self.score_label = LabelNode(text = 'Score: 0',
                                      font=('Helvetica', 40),
                                      parent = self,
                                      position = self.score_position)
 
-        life_bar_position = self.center_of_screen
-        life_bar_position.x = 840
-        life_bar_position.y = 700
+        life_bar_position = Vector2(self.size_of_screen_x * (4.938/6), self.size_of_screen_y* (5.5/6))
         self.life_bar= SpriteNode('./assets/sprites/3_hearts.png',
                                  parent = self,
                                  position = life_bar_position)
-
+        
     def update (self):
         # this method is called, hopefully, 60 times a second
         # move the character if button down
         
-        #If button held down, move left
-        if self.left_button_down == True:
+
+          #Setting Boundaries
+        if self.character.position.x <= self.left_limit:
+            self.left_button_down = False
+        #If left button is pressed down
+        if self.left_button_down == True and not self.dead:
+             
              characterMove = Action.move_by(-1*self.character_move_speed, 
                                            0.0, 
                                            0.1)
              self.character.run_action(characterMove)
+             
+             
+             #Counter texture change
+             if time.time() - self.walking_counter > 0.1 and not self.dead:
+                 self.character.texture = Texture('./assets/sprites/walking.png')
+             
+             if time.time() - self.walking_counter > 0.2 and not self.dead:
+                 self.character.texture = Texture('./assets/sprites/walking1.png')
+
+             if time.time() - self.walking_counter > 0.3 and not self.dead:
+                 self.character.texture = Texture('./assets/sprites/walking2.png')
+                 
+             if time.time() - self.walking_counter > 0.4 and not self.dead:
+                 self.character.texture = Texture('./assets/sprites/walking3.png')
+                 self.walking_counter = time.time()
+         
+         
+             
         #If button held down. move right
-        if self.right_button_down == True:
+
+          #Setting Boundaries
+        if self.character.position.x >= self.right_limit:
+            self.right_button_down = False
+
+        if self.right_button_down == True and not self.dead:
+        	
+            self.character.texture = Texture('./assets/sprites/walking1.png')
             characterMove = Action.move_by(self.character_move_speed, 
                                            0.0, 
                                            0.1)
             self.character.run_action(characterMove)
+            
+            #Walking Textures
+            if time.time() - self.walking_counter > 0.1 and not self.dead:
+                self.character.texture = Texture('./assets/sprites/walking.png')
+             
+            if time.time() - self.walking_counter > 0.2 and not self.dead:
+                self.character.texture = Texture('./assets/sprites/walking1.png')
+
+            if time.time() - self.walking_counter > 0.3 and not self.dead:
+                self.character.texture = Texture('./assets/sprites/walking2.png')
+                 
+            if time.time() - self.walking_counter > 0.4 and not self.dead:
+                self.character.texture = Texture('./assets/sprites/walking3.png')
+                self.walking_counter = time.time()
+             
+            
+          
+          #Setting Boundaries
+        if self.character.position.x <= self.left_limit:
+            self.left_button_down = False
         
+        if self.character.position.x >= self.right_limit:
+            self.right_button_down = False
         #double the speed when held down
         #Dash Right
-        if self.dash_button_down == True:
-            if self.right_button_down == True:
-             
+        if self.dash_button_down == True and not self.dead:
+            if self.right_button_down == True and not self.dead:
+                
+                
                 characterMoveDash = Action.move_by(self.dash_move_speed, 
                                                0, 
                                                0.1)
                 self.character.run_action(characterMoveDash)
-            
+                
+                if time.time() - self.walking_counter > 0.1 and not self.dead:
+                    self.character.texture = Texture('./assets/sprites/walking.png')
+             
+                if time.time() - self.walking_counter > 0.2 and not self.dead:
+                    self.character.texture = Texture('./assets/sprites/walking1.png')
+
+                if time.time() - self.walking_counter > 0.3 and not self.dead:
+                    self.character.texture = Texture('./assets/sprites/walking2.png')
+                 
+                if time.time() - self.walking_counter > 0.4 and not self.dead:
+                    self.character.texture = Texture('./assets/sprites/walking3.png')
+                    self.walking_counter = time.time()
+
             #Dash Left
-            if self.left_button_down == True:
+            if self.left_button_down == True and not self.dead:
                 
                 characterMoveDash = Action.move_by(-1*self.dash_move_speed, 
                                                0, 
                                                0.1)
                 self.character.run_action(characterMoveDash)
-            
+                
+                if time.time() - self.walking_counter > 0.1 and not self.dead:
+                    self.character.texture = Texture('./assets/sprites/walking.png')
+             
+                if time.time() - self.walking_counter > 0.2 and not self.dead:
+                    self.character.texture = Texture('./assets/sprites/walking1.png')
+
+                if time.time() - self.walking_counter > 0.3 and not self.dead:
+                    self.character.texture = Texture('./assets/sprites/walking2.png')
+                 
+                if time.time() - self.walking_counter > 0.4 and not self.dead:
+                    self.character.texture = Texture('./assets/sprites/walking3.png')
+                    self.walking_counter = time.time()
+
+
                 
             #check if an arrow should spawn
-        arrow_create_chance = random.randint(1,7)
+        arrow_create_chance = random.randint(1,6)
         if arrow_create_chance <= self.arrow_rate:
             self.add_arrow()
         
@@ -168,9 +242,7 @@ class GameScene(Scene):
 #If hit once
                     if self.hearts == 2:
                     	
-                        life_bar_position = self.center_of_screen
-                        life_bar_position.x = 850
-                        life_bar_position.y = 700
+                        life_bar_position = Vector2(self.size_of_screen_x * (5/6),self.size_of_screen_y* (5.5/6))
                         self.life_bar= SpriteNode('./assets/sprites/2_hearts.png',
                                  parent = self,
                                  position = life_bar_position)
@@ -178,40 +250,39 @@ class GameScene(Scene):
 #If hit twice
                     if self.hearts == 1:
 	
-                        life_bar_position = self.center_of_screen
-                        life_bar_position.x = 850
-                        life_bar_position.y = 700
+                        life_bar_position = Vector2(self.size_of_screen_x * (5/6), self.size_of_screen_y * (5.5/6))
                         self.life_bar= SpriteNode('./assets/sprites/1_heart.png',
                                  parent = self,
                                  position = life_bar_position)
 #Dead
                     if self.hearts == 0:
-                    	
-                        life_bar_position = self.center_of_screen
-                        life_bar_position.x = 850
-                        life_bar_position.y = 700
+                        
+                        
+                        life_bar_position = Vector2(self.size_of_screen_x * (5/6), self.size_of_screen_y* (5.5/6))
                         self.life_bar= SpriteNode('./assets/sprites/0_hearts.png',
                                  parent = self,
                                  position = life_bar_position)
                         self.dead = True
                         
-                        menu_button_position = self.size/2
-                        menu_button_position.y = menu_button_position.y - 70
-                        menu_button_position.x = menu_button_position.x - 150	
-                        self.menu_button = SpriteNode('./assets/sprites/menu.png',
+                        menu_button_position = Vector2(self.size_of_screen_x * (1/2), self.size_of_screen_y* (1.5/4))
+                        
+                        self.menu_button = SpriteNode('./assets/sprites/menu1.png',
                                       parent = self,
                                       position = menu_button_position ,
                                       alpha = 1,
-                                      scale = 0.52)
+                                      scale = 0.5)
                         
                         self.game_over = SpriteNode('./assets/sprites/game_over.png',
                                       parent = self,
-                                      position = Vector2(self.screen_center_x, 
-                                                         self.screen_center_y),
+                                      position = Vector2(self.size_of_screen_x * (1.1/2), self.size_of_screen_y* (1/2)),
                                       alpha = 1,
                                       scale = 2.5)
                     	
-                        self.character.remove_from_parent()
+                        self.character.texture = Texture('./assets/sprites/dead.png')
+                        
+                        
+                        
+                        
 
                     # since game over, move to next scene
         else:
@@ -232,8 +303,7 @@ class GameScene(Scene):
             self.left_button_down = True
             
         if self.right_button.frame.contains_point(touch.location):
-            self.right_button_down = True
-        
+            self.right_button_down = True              	
             
     def touch_moved(self, touch):
         # this method is called, when user moves a finger around on the screen
@@ -251,8 +321,7 @@ class GameScene(Scene):
             # if start button is pressed, go to game scene
             if self.menu_button.frame.contains_point(touch.location):
                 self.dismiss_modal_scene()
-    
-    
+                
     def did_change_size(self):
         # this method is called, when user changes the orientation of the screen
         # thus changing the size of each dimension
