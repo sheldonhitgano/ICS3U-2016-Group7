@@ -1,17 +1,17 @@
-# Created by: Sheldon H
+# Created by: Mr. Coxall
 # Created on: Sep 2016
 # Created for: ICS3U
-# This scene shows a splash screen for 2 seconds,
+# This scene shows a game logo screen for 2 seconds,
 #   then transitions to the main menu.
 
 from scene import *
 import ui
 import time
 
-from game_logo_scene import *
+from main_menu_scene import *
 
 
-class SplashScene(Scene):
+class GameLogoScene(Scene):
     def setup(self):
         # this method is called, when user moves to this scene
         
@@ -20,10 +20,10 @@ class SplashScene(Scene):
         
         # add MT blue background color
         self.background = SpriteNode(position = self.size / 2, 
-                                     color = (0.61, 0.78, 0.87), 
+                                     color = (256), 
                                      parent = self, 
                                      size = self.size)
-        self.school_crest = SpriteNode('./assets/sprites/MT_Crest.jpg',
+        self.game_logo = SpriteNode('./assets/sprites/arrow_kid.png',
                                        parent = self,
                                        position = self.size/2)
     
@@ -32,7 +32,7 @@ class SplashScene(Scene):
         
         # after 2 seconds, move to main menu scene
         if not self.presented_scene and time.time() - self.start_time > 2:
-            self.present_modal_scene(GameLogoScene())
+            self.present_modal_scene(MainMenuScene())
     
     def touch_began(self, touch):
         # this method is called, when user touches the screen
@@ -47,6 +47,21 @@ class SplashScene(Scene):
         pass
     
     def did_change_size(self):
+        # this method is called, when user changes the orientation of the screen
+        # thus changing the size of each dimension
+        pass
+    
+    def pause(self):
+        # this method is called, when user touches the home button
+        # save anything before app is put to background
+        pass
+    
+    def resume(self):
+        # this method is called, when user place app from background 
+        # back into use. Reload anything you might need.
+        pass
+    
+
         # this method is called, when user changes the orientation of the screen
         # thus changing the size of each dimension
         pass
