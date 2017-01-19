@@ -6,6 +6,7 @@
 from scene import *
 from game_scene import*
 from help_scene import *
+from credits_scene import *
 
 import ui
 
@@ -14,40 +15,37 @@ class MainMenuScene(Scene):
     def setup(self):
         # this method is called, when user moves to this scene
         
+        self.size_of_screen_x = self.size.x
+        self.size_of_screen_y = self.size.y
+        self.screen_center_x = self.size_of_screen_x/2
+        self.screen_center_y = self.size_of_screen_y/2
+
         # add MT blue background color
         self.background = SpriteNode(position = self.size / 2, 
                                      color = 'white', 
                                      parent = self, 
                                      size = self.size)
         
-        title_position = self.size/2
-        title_position.y = title_position.y + 200
-        title_position.x = title_position.x + 50
+        title_position = Vector2(self.size_of_screen_x * 0.55, self.size_of_screen_y * 0.75)
         self.title_label = SpriteNode('./assets/sprites/title.png',
                                       parent = self,
                                       position = title_position,
                                       scale = 1.5)
                                       
         
-        start_button_position = self.size/2
-        start_button_position.x = start_button_position.x + 80
-        start_button_position.y = start_button_position.y - 60
+        start_button_position = Vector2(self.size_of_screen_x * 0.55, self.size_of_screen_y * (1.25/3))
         self.start_button = SpriteNode('./assets/sprites/start1.png',
                                        parent = self,
                                        position = start_button_position,
                                        scale = 1)
         
-        help_button_position = self.size/2
-        help_button_position.x = help_button_position.x + 80
-        help_button_position.y = help_button_position.y - 200
+        help_button_position = Vector2(self.size_of_screen_x * 0.55, self.size_of_screen_y * (0.75/3))
         self.help_button = SpriteNode('./assets/sprites/help1.png',
                                        parent = self,
                                        position = help_button_position,
                                        scale = 1)
     
-        credits_button_position = self.size/2
-        credits_button_position.x = credits_button_position.x + 80
-        credits_button_position.y = credits_button_position.y - 350
+        credits_button_position = Vector2(self.size_of_screen_x * (0.55), self.size_of_screen_y * (0.25/3))
         self.credits_button = SpriteNode('./assets/sprites/credits.png',
                                        parent = self,
                                        position = credits_button_position,
@@ -72,9 +70,11 @@ class MainMenuScene(Scene):
         if self.start_button.frame.contains_point(touch.location):
             self.present_modal_scene(GameScene())
         
+        #if this button is touched, go to help scene
         if self.help_button.frame.contains_point(touch.location):
             self.present_modal_scene(HelpScene())
          
+         #if button is touched, go to credits scene
         if self.credits_button.frame.contains_point(touch.location):
             self.present_modal_scene(CreditsScene())
          
@@ -92,5 +92,4 @@ class MainMenuScene(Scene):
         # this method is called, when user place app from background 
         # back into use. Reload anything you might need.
         pass
-    
     
