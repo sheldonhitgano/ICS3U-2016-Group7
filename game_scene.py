@@ -9,7 +9,7 @@ from numpy import random
 from scene import *
 import time
 import ui
-
+import sound
 
 
 class GameScene(Scene):
@@ -36,7 +36,6 @@ class GameScene(Scene):
         self.hearts = 3
         self.dead = False
         self.score = 0
-        self.health = 3
         self.walking_counter =time.time()
         self.left_limit = 30
         self.right_limit = 1012
@@ -90,7 +89,7 @@ class GameScene(Scene):
                                      font=('Helvetica', 40),
                                      parent = self,
                                      position = self.score_position)
-
+        #Life Bar
         life_bar_position = Vector2(self.size_of_screen_x * (4.938/6), self.size_of_screen_y* (5.5/6))
         self.life_bar= SpriteNode('./assets/sprites/3_hearts.png',
                                  parent = self,
@@ -104,7 +103,7 @@ class GameScene(Scene):
           #Setting Boundaries
         if self.character.position.x <= self.left_limit:
             self.left_button_down = False
-        #If left button is pressed down
+        #If left button is pressed down, then move the character to the left
         if self.left_button_down == True and not self.dead:
              
              characterMove = Action.move_by(-1*self.character_move_speed, 
@@ -129,12 +128,13 @@ class GameScene(Scene):
          
          
              
-        #If button held down. move right
+        
 
           #Setting Boundaries
         if self.character.position.x >= self.right_limit:
             self.right_button_down = False
-
+          
+          #If button held down move right
         if self.right_button_down == True and not self.dead:
         	
             self.character.texture = Texture('./assets/sprites/walking1.png')
@@ -213,7 +213,7 @@ class GameScene(Scene):
 
                 
             #check if an arrow should spawn
-        arrow_create_chance = random.randint(1,6)
+        arrow_create_chance = random.randint(1,8)
         if arrow_create_chance <= self.arrow_rate:
             self.add_arrow()
         
@@ -226,18 +226,20 @@ class GameScene(Scene):
             else:
                 pass
         
-        #When a arrow hits the character, game over
+        #When a arrow hits the character, lose 1 heart. If at 1 heart and an arrow hits, game over
         if len(self.arrows) > 0:
             #print('checking')
             for arrow_hit in self.arrows:
                 #print('arrows ->' + str(arrows_hitframe))
                 #print('character  ->' + str(self.character.frame))
                 if arrow_hit.frame.intersects(self.character.frame):
+                    
                     #print('a hit')
                     self.hearts = self.hearts - 1
                     arrow_hit.remove_from_parent()
                     self.arrows.remove(arrow_hit)
-                    
+                    #Sound Effect
+                    sound.play_effect('arcade:Hit_4',1)
 
 #If hit once
                     if self.hearts == 2:
@@ -257,13 +259,14 @@ class GameScene(Scene):
 #Dead
                     if self.hearts == 0:
                         
-                        
+                        #When Dead show 0 hearts
                         life_bar_position = Vector2(self.size_of_screen_x * (5/6), self.size_of_screen_y* (5.5/6))
                         self.life_bar= SpriteNode('./assets/sprites/0_hearts.png',
                                  parent = self,
                                  position = life_bar_position)
                         self.dead = True
                         
+                        #Show return to menu button
                         menu_button_position = Vector2(self.size_of_screen_x * (1/2), self.size_of_screen_y* (1.5/4))
                         
                         self.menu_button = SpriteNode('./assets/sprites/menu1.png',
@@ -271,13 +274,13 @@ class GameScene(Scene):
                                       position = menu_button_position ,
                                       alpha = 1,
                                       scale = 0.5)
-                        
+                        #Show game over 
                         self.game_over = SpriteNode('./assets/sprites/game_over.png',
                                       parent = self,
                                       position = Vector2(self.size_of_screen_x * (1.1/2), self.size_of_screen_y* (1/2)),
                                       alpha = 1,
                                       scale = 2.5)
-                    	
+                        #Show the dead texture
                         self.character.texture = Texture('./assets/sprites/dead.png')
                         
                         
@@ -339,13 +342,15 @@ class GameScene(Scene):
     
     def add_arrow(self):
         arrow_start_position = Vector2()
+        #Width of spawn
         arrow_start_position.x = random.randint(970)
                                  
-       
+        #Arrow Spawn
         arrow_start_position.y = self.size_of_screen_y + 100
         arrow_end_position = Vector2()
         arrow_end_position.x = arrow_start_position.x
                               
+        #Arrow stops at this position
         arrow_end_position.y = 130
         
         self.arrows.append(SpriteNode('./assets/sprites/arrow.png',
