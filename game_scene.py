@@ -9,7 +9,7 @@ from numpy import random
 from scene import *
 import time
 import ui
-
+import sound
 
 
 class GameScene(Scene):
@@ -36,7 +36,6 @@ class GameScene(Scene):
         self.hearts = 3
         self.dead = False
         self.score = 0
-        self.health = 3
         self.walking_counter =time.time()
         self.left_limit = 30
         self.right_limit = 1012
@@ -213,7 +212,7 @@ class GameScene(Scene):
 
                 
             #check if an arrow should spawn
-        arrow_create_chance = random.randint(1,6)
+        arrow_create_chance = random.randint(1,8)
         if arrow_create_chance <= self.arrow_rate:
             self.add_arrow()
         
@@ -233,11 +232,13 @@ class GameScene(Scene):
                 #print('arrows ->' + str(arrows_hitframe))
                 #print('character  ->' + str(self.character.frame))
                 if arrow_hit.frame.intersects(self.character.frame):
+                    
                     #print('a hit')
                     self.hearts = self.hearts - 1
                     arrow_hit.remove_from_parent()
                     self.arrows.remove(arrow_hit)
                     
+                    sound.play_effect('arcade:Hit_4',1)
 
 #If hit once
                     if self.hearts == 2:
