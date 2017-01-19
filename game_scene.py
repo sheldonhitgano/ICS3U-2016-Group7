@@ -314,7 +314,7 @@ class GameScene(Scene):
     
     def touch_ended(self, touch):
         # this method is called, when user releases a finger from the screen
-        #If I remove my finger, then the spaceship shouldn't move anymore
+        #If I remove my finger, then the character shouldn't move anymore
         
         self.left_button_down = False
         self.right_button_down = False
