@@ -1,4 +1,4 @@
-# Created by: Mr. Coxall
+# Created by: Sheldon H.
 # Created on: Sep 2016
 # Created for: ICS3U
 # This scene shows a game logo screen for 2 seconds,
