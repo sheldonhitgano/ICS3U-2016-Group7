@@ -1,4 +1,5 @@
-# Created by: Sheldon Hitgano
+# Created by: Mr.Coxall
+# Modified by: Sheldon Hitgano
 # Created on: Sep 2016
 # Created for: ICS3U
 # This scene shows the main menu.
