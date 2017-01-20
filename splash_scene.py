@@ -1,4 +1,5 @@
-# Created by: Sheldon H
+# Created by: Mr.Coxall
+# Modified by: Sheldon H
 # Created on: Sep 2016
 # Created for: ICS3U
 # This scene shows a splash screen for 2 seconds,
