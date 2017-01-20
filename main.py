@@ -1,4 +1,5 @@
-# Created by: Sheldon H
+# Created by: Mr. Coxall
+# Modified by:Sheldon H
 # Created on: Sep 2016
 # Created for: ICS3U
 # This program is the first file in a multi-scene game template
@@ -20,10 +21,10 @@
 from scene import *
 import ui
 
+from game_scene import *
 from game_logo_scene import *
 from splash_scene import * 
-
-
+from help_scene import *
 
 
 #  ..use when deploying app for Xcode and the App Store
